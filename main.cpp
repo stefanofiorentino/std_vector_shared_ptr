@@ -13,11 +13,24 @@ public:
     {
         cout << "constructor" << endl;
     };
+    
+    virtual void func() 
+    {
+        puts(__PRETTY_FUNCTION__);
+    }
 
     ~Object()
     {
         cout << "destructor" << endl;
     };
+};
+
+class Child : public Object
+{
+    void func() final 
+    {
+        puts(__PRETTY_FUNCTION__);
+    }
 };
 
 void test()
@@ -27,8 +40,21 @@ void test()
     cout << obj.use_count() << endl;
     vector<shared_ptr<Object> > test;
     test.push_back(obj);
-    cout << test.at(0).get() << endl;
-    cout << test.at(0).use_count() << endl;
+    cout << test.back().get() << endl;
+    cout << test.back().use_count() << endl;
+    test.back()->func();
+    test.emplace_back(obj);
+    cout << test.back().get() << endl;
+    cout << test.back().use_count() << endl;
+    test.back()->func();
+    test.emplace_back(std::move(obj));
+    cout << test.back().get() << endl;
+    cout << test.back().use_count() << endl;
+    test.back()->func();
+    test.emplace_back(new Child);
+    cout << test.back().get() << endl;
+    cout << test.back().use_count() << endl;
+    test.back()->func();
 }
 
 int main()
